@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+
+import os, sys, tempfile
+
+try:
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import pandas as pd
+except ImportError as e:
+    print("You need to install the Python packages matplotlib and pandas")
+    print("e.g., `pip install --user matplotlib pandas`")
+    sys.exit(1)
+
+(_, tracefile) = tempfile.mkstemp(suffix = ".csv")
+print("hept-plot: saving trace to {}".format(tracefile))
+os.system("HEPT_TRACE=\"{}\" {}".format(tracefile, " ".join(sys.argv[1:])))
+
+try:
+    trace = pd.read_csv(tracefile)
+    trace = trace.loc[:, ~trace.columns.str.contains('^Unnamed')]
+    trace.plot(kind = 'line')
+    plt.legend(loc = 'upper left')
+    plt.show()
+except pd.errors.EmptyDataError:
+    print("hept-plot: nothing to plot")
+    sys.exit(0)
