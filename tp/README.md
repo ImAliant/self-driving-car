@@ -3,8 +3,9 @@
 Les séances de travaux pratiques se structurent en deux blocs.
 
 Dans un premier temps, nous allons prendre en main le langage synchrone
-[Heptagon](http://heptagon.gforge.inria.fr) à travers des exercices de
-programmation. Les exercices en question se trouvent dans les fichiers TP-XX.pdf
+[Heptagon](https://gitlab.inria.fr/synchrone/heptagon) à travers des exercices
+de programmation. Les exercices en question se trouvent dans les fichiers
+TP-XX.pdf
 
 Dans un second temps, les séances de travaux pratiques serviront de soutien à la
 réalisation du projet.

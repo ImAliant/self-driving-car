@@ -10,3 +10,13 @@
 #+LATEX_HEADER: \hypersetup{hidelinks}
 #+LATEX_HEADER: \usepackage[french]{babel}
 # (org-latex-export-to-pdf)
+
+* Cours 1 <2024-10-01>
+  On lit le syllabus ainsi que le début des notes.
+
+  Le manuel d'Heptagon peut être trouvé sur le dépôt git du projet. On peut
+  cliquer sur le bouton /download/ pour télécharger une copie PDF.
+
+  https://gitlab.inria.fr/synchrone/heptagon/-/blob/ec26be27b91f3e601b98b8b7e15e8d56d4b9afc7/manual/heptagon-manual.pdf
+* Cours 2 <2024-10-08>
+  On lit les notes jusqu'à la réinitialisation, exclue.
