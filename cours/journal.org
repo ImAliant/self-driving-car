@@ -20,3 +20,12 @@
   https://gitlab.inria.fr/synchrone/heptagon/-/blob/ec26be27b91f3e601b98b8b7e15e8d56d4b9afc7/manual/heptagon-manual.pdf
 * Cours 2 <2024-10-08>
   On lit les notes jusqu'à la réinitialisation, exclue.
+* Cours 3 <2024-10-15>
+  On traite de la réinitialisation et des horloges.
+* Cours 4 <2024-10-22>
+  On traite des automates.
+* Cours 5 <2024-10-29>
+  On traite des structures de contrôle et des constructions qui manipulent les
+  tableaux, itérateurs exclus.
+* Cours 6 <2024-11-05>
+  On traite des itérateurs.
