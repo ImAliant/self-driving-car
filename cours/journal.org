@@ -28,4 +28,4 @@
   On traite des structures de contrôle et des constructions qui manipulent les
   tableaux, itérateurs exclus.
 * Cours 6 <2024-11-05>
-  On traite des itérateurs.
+  On traite des itérateurs, ainsi que de l'exemple de synthèse audio temps-réel.
