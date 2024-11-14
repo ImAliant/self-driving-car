@@ -4,11 +4,13 @@ open Utilities
 type simulation = Running | Stopped
 type runningAction = (* Idle | *) G | T | S
 
+(* Retourne une vitesse nulle *)
 fun no_movement() returns (rspeed: wheels)
 let
   rspeed = { left = 0.0; right = 0.0 }
 tel
 
+(* Calcule la vitesse maximale des roues en fonction de la limitation de vitesse *)
 fun max_rspeed(speed_limit : float) returns (max : float)
 var w : float;
 let
@@ -16,9 +18,11 @@ let
   max = min_float(cMAXWHEEL, w);
 tel
 
-fun get_movement_from_color_and_param(col : color; speed_limit : float) returns (rspeed : wheels)
-var max_rota, rota_turn: float;
+(* Retourne la vitesse de rotation des roues en fonction de la couleur détecter par le capteur RC *)
+fun get_rspeed_from_sensor_and_param(sens : sensors; speed_limit : float) returns (rspeed : wheels)
+var max_rota, rota_turn: float; col : color;
 let
+  col = sens.s_road;
   max_rota = max_rspeed(speed_limit);
   rota_turn = max_rota *. (1.0-.0.2);
   rspeed = if compare_colors(col, cyan) >. 0.85 then { left = max_rota ; right = rota_turn}
@@ -45,7 +49,7 @@ let
         - si RC capte couleur cyan alors on pivote le véhicule vers la droite
         - si RC capte couleur magenta alors on pivote le véhicule vers la gauche 
       *)
-      rspeed = get_movement_from_color_and_param(sens.s_road, step_iti.param);
+      rspeed = get_rspeed_from_sensor_and_param(sens, step_iti.param);
       step = if compare_colors(sens.s_road, green) = 1.0 then last step + 1 else last step;
       arriving = false;
       unless step_iti.act = Turn then T
