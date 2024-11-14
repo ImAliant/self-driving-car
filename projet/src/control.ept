@@ -13,7 +13,7 @@ fun max_rpm(speed_limit : float) returns (max : float)
 var w : float;
 let
   w = speed_limit /. cD;
-  max = max_float(cMAXWHEEL, w *. (60.0 /. (2.0 *. pi)))
+  max = min_float(cMAXWHEEL, w *. (60.0 /. (2.0 *. pi)))
 tel
 
 fun get_movement_from_color_and_param(col : color; speed_limit : float) returns (rspeed : wheels)
@@ -28,9 +28,10 @@ tel
 
 node controller(sens : sensors; iti : itielts)
        returns (rspeed : wheels; arriving : bool)
-var step: int = 0; step_iti : itielt;
+var last step: int = 0; step_iti : itielt;
 let
-  step_iti = iti[> step <];
+  step_iti = iti[> last step <];
+
   automaton
     state Idle do
       rspeed = no_movement();
@@ -45,6 +46,7 @@ let
         - si RC capte couleur magenta alors on pivote le véhicule vers la gauche 
       *)
       rspeed = get_movement_from_color_and_param(sens.s_road, step_iti.param);
+      step = if compare_colors(sens.s_road, green) = 1.0 then last step + 1 else last step;
       arriving = false;
       unless step_iti.act = Turn then T
            | step_iti.act = Stop then S
