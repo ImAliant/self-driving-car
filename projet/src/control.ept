@@ -9,17 +9,17 @@ let
   rspeed = { left = 0.0; right = 0.0 }
 tel
 
-fun max_rpm(speed_limit : float) returns (max : float)
+fun max_rspeed(speed_limit : float) returns (max : float)
 var w : float;
 let
-  w = speed_limit /. cD;
-  max = min_float(cMAXWHEEL, w *. (60.0 /. (2.0 *. pi)))
+  w = (speed_limit *. 360.0) /. (pi *. cD);
+  max = min_float(cMAXWHEEL, w);
 tel
 
 fun get_movement_from_color_and_param(col : color; speed_limit : float) returns (rspeed : wheels)
 var max_rota, rota_turn: float;
 let
-  max_rota = max_rpm(speed_limit);
+  max_rota = max_rspeed(speed_limit);
   rota_turn = max_rota *. (1.0-.0.2);
   rspeed = if compare_colors(col, cyan) >. 0.85 then { left = max_rota ; right = rota_turn}
            else if compare_colors(col, magenta) >. 0.85 then { left = rota_turn ; right = max_rota }
