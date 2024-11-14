@@ -1,9 +1,27 @@
 open Globals
+open Utilities
 
+type simulation = Running | Stopped
+
+fun stop() returns (rspeed : wheels; arriving : bool)
+let
+  rspeed = { left = 0.0; right = 0.0 };
+  arriving = true;
+tel
+
+fun run() returns (rspeed : wheels; arriving : bool)
+let
+
+tel
 
 node controller(sens : sensors; iti : itielts)
        returns (rspeed : wheels; arriving : bool)
+var step: int = 0;
 let
-  rspeed = { left = 0.0; right = 0.0 };
-  arriving = false;
+  automaton
+    state Running do
+      run()
+    state Stopped do
+      stop()
+  end;
 tel
