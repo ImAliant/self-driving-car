@@ -2,26 +2,56 @@ open Globals
 open Utilities
 
 type simulation = Running | Stopped
+type runningAction = (* Idle | *) G | T | S
 
-fun stop() returns (rspeed : wheels; arriving : bool)
+fun no_movement() returns (rspeed: wheels)
 let
-  rspeed = { left = 0.0; right = 0.0 };
-  arriving = true;
+  rspeed = { left = 0.0; right = 0.0 }
 tel
 
-fun run() returns (rspeed : wheels; arriving : bool)
+fun get_movement_from_color(col : color) returns (rspeed : wheels)
 let
-
+  rspeed = if compare_colors(col, cyan) >. 0.85 then { left = 200.0 ; right = 150.0}
+           else if compare_colors(col, magenta) >. 0.85 then { left = 150.0 ; right = 200.0 }
+           else { left = 200.0 ; right = 200.0 };
 tel
+
+(* fun max_rpm(speed_limit : float) returns (max : float)
+var w : float;
+let
+  w = speed_limit /. cd;
+  max = bound(cMAXWHEEL, w *. (60 /. (2.0 *. pi)))
+tel *)
 
 node controller(sens : sensors; iti : itielts)
        returns (rspeed : wheels; arriving : bool)
-var step: int = 0;
+var step: int; step_iti : itielt;
 let
+  step = 0;
+  step_iti = iti[> step <];
   automaton
-    state Running do
-      run()
-    state Stopped do
-      stop()
-  end;
+    state Idle do
+      rspeed = no_movement();
+      arriving = false;
+      unless step_iti.act = Go then G 
+           | step_iti.act = Turn then T
+    state G do
+      (*
+      Tant que le vehicule se trouve sur le guide bleu on avance tout droit
+      Sinon:
+        - si RC capte couleur cyan alors on pivote le véhicule vers la droite
+        - si RC capte couleur magenta alors on pivote le véhicule vers la gauche 
+      *)
+      rspeed = get_movement_from_color(sens.s_road);
+      arriving = false;
+      unless step_iti.act = Turn then T
+           | step_iti.act = Stop then S
+    state T do
+      rspeed = no_movement();
+      arriving = false;
+      (*on fait tourner le véhicule sur lui même tant que le l'angle n'est pas égale au param *)
+    state S do
+      rspeed = no_movement();
+      arriving = true;
+  end
 tel
