@@ -1,14 +1,19 @@
 open Globals
 open Utilities
 
-type simulation = Running | Stopped
-type runningAction = (* Idle | *) G | T | S
+type direction = Left | Right | Straight
 
 (* Retourne une vitesse nulle *)
 fun no_movement() returns (rspeed: wheels)
 let
   rspeed = { left = 0.0; right = 0.0 }
 tel
+
+fun speed_arriving(b: bool) returns (rspeed: wheels; arriving: bool)
+let
+  rspeed = no_movement();
+  arriving = b;
+tel;
 
 (* Calcule la vitesse maximale des roues en fonction de la limitation de vitesse *)
 fun max_rspeed(speed_limit : float) returns (max : float)
@@ -18,16 +23,59 @@ let
   max = min_float(cMAXWHEEL, w);
 tel
 
-(* Retourne la vitesse de rotation des roues en fonction de la couleur détecter par le capteur RC *)
-fun get_rspeed_from_sensor_and_param(sens : sensors; speed_limit : float) returns (rspeed : wheels)
-var max_rota, rota_turn: float; col : color;
+(* Retourne la direction à prendre en fonction de la couleur détecter par le capteur RC *)
+fun get_direction(col : color) returns (dir : direction)
 let
-  col = sens.s_road;
+  dir = if compare_colors(col, cyan) >. 0.71 then Right
+        else if compare_colors(col, magenta) >. 0.71 then Left
+        else Straight;
+tel
+
+fun calculate_rota_turn(col : color; max_rota : float) returns (rota_turn : float; dir : direction)
+var diff_guide : float;
+let
+  dir = get_direction(col);
+  diff_guide = 1.0 -. compare_colors(col, blue);
+  rota_turn = max_rota *. (1.0 -. diff_guide);
+tel
+
+(* Retourne la vitesse de rotation des roues en fonction de la couleur détecter par le capteur RC *)
+node calculate_rspeed(sens : sensors; speed_limit : float) returns (rspeed : wheels)
+var max_rota, rota_turn: float; dir: direction; colRC : color;
+let
+  colRC = sens.s_road;
   max_rota = max_rspeed(speed_limit);
-  rota_turn = max_rota *. (1.0-.0.2);
-  rspeed = if compare_colors(col, cyan) >. 0.85 then { left = max_rota ; right = rota_turn}
-           else if compare_colors(col, magenta) >. 0.85 then { left = rota_turn ; right = max_rota }
+  (rota_turn, dir) = calculate_rota_turn(colRC, max_rota);
+  rspeed = if dir = Right then { left = max_rota ; right = rota_turn}
+           else if dir = Left then { left = rota_turn ; right = max_rota }
            else { left = max_rota ; right = max_rota };
+tel
+
+(* Retourne true si l'action est Go *)
+fun is_go(act : action) returns (b : bool)
+let
+  b = act = Go
+tel
+
+(* Retourne true si l'action est Turn *)
+fun is_turn(act : action) returns (b : bool)
+let
+  b = act = Turn
+tel
+
+(* Retourne true si l'action est Stop *)
+fun is_stop(act : action) returns (b : bool)
+let
+  b = act = Stop
+tel
+
+(* Fonction utilisé lorsque l'action est Go, détermine la vitesse des roues et si on doit changer d'étape *)
+node go_state(sens : sensors; step_iti : itielt; old_step : int) returns (rspeed : wheels; arriving : bool; step : int)
+let
+  rspeed = calculate_rspeed(sens, step_iti.param);
+  step = if compare_colors(sens.s_road, green) = 1.0 
+         then old_step + 1 else old_step;
+  arriving = false;
 tel
 
 node controller(sens : sensors; iti : itielts)
@@ -38,28 +86,26 @@ let
 
   automaton
     state Idle do
-      rspeed = no_movement();
-      arriving = false;
-      unless step_iti.act = Go then G 
-           | step_iti.act = Turn then T
-    state G do
-      (*
-      Tant que le vehicule se trouve sur le guide bleu on avance tout droit
-      Sinon:
-        - si RC capte couleur cyan alors on pivote le véhicule vers la droite
-        - si RC capte couleur magenta alors on pivote le véhicule vers la gauche 
-      *)
-      rspeed = get_rspeed_from_sensor_and_param(sens, step_iti.param);
-      step = if compare_colors(sens.s_road, green) = 1.0 then last step + 1 else last step;
-      arriving = false;
-      unless step_iti.act = Turn then T
-           | step_iti.act = Stop then S
-    state T do
-      rspeed = no_movement();
-      arriving = false;
+      (rspeed, arriving) = speed_arriving(false);
+      unless is_go(step_iti.act) then Go
+           | is_turn(step_iti.act) then Turn
+           | is_stop(step_iti.act) then Stop
+    state Go do
+      (rspeed, arriving, step) = go_state(sens, step_iti, last step);
+      unless is_turn(step_iti.act) then Turn
+           | is_stop(step_iti.act) then Stop
+           | compare_colors(sens.s_road, red) = 1.0 and compare_colors(sens.s_front, red) = 1.0 then TrafficLight
+           (* | sens.s_sonar > 0 then Obstacle *)
+    state Turn do
+      (rspeed, arriving) = speed_arriving(false);
       (*on fait tourner le véhicule sur lui même tant que le l'angle n'est pas égale au param *)
-    state S do
-      rspeed = no_movement();
-      arriving = true;
+    state Obstacle do
+      (rspeed, arriving) = speed_arriving(false);
+      unless sens.s_sonar = 0 then Idle
+    state TrafficLight do
+      (rspeed, arriving) = speed_arriving(false);
+      unless compare_colors(sens.s_front, green) = 1.0 then Idle
+    state Stop do
+      (rspeed, arriving) = speed_arriving(true);
   end
 tel
