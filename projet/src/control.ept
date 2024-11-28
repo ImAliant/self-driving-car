@@ -3,51 +3,86 @@ open Utilities
 
 type direction = Left | Right | Straight
 
+const max_diff_color : float = 0.7071067811865476
+const no_trigger_speed_radar : float = 0.01
+
+const kP : float = 0.15 (* constante trouvé par essai pour le gain proportionnel *)
+const kI : float = 0.0001 (* constante trouvé par essai pour le gain intégral *)
+const kD : float = 0.1 (* constante trouvé par essai pour le gain dérivé *)
+
+const wheel_circumference : float = pi *. cD
+
 (* Retourne une vitesse nulle *)
 fun no_movement() returns (rspeed: wheels)
 let
   rspeed = { left = 0.0; right = 0.0 }
 tel
 
+(* Retourne une vitesse nulle et indique si on est arrivé à destination *)
 fun speed_arriving(b: bool) returns (rspeed: wheels; arriving: bool)
 let
   rspeed = no_movement();
   arriving = b;
-tel;
+tel
 
 (* Calcule la vitesse maximale des roues en fonction de la limitation de vitesse *)
 fun max_rspeed(speed_limit : float) returns (max : float)
 var w : float;
 let
-  w = (speed_limit *. 360.0) /. (pi *. cD);
-  max = min_float(cMAXWHEEL, w);
+  (* calcule le nombre de degré par seconde par rapport à la limitation de vitesse *)
+  (* que l'on divise par la circonférence de la roue pour obtenir le nombre de rotation par seconde *)
+  w = ((speed_limit *. 360.0) /. wheel_circumference) -. no_trigger_speed_radar;
+  max = min_float(cMAXWHEEL, w); (* on prend le minimum entre la vitesse maximal des roues et la vitesse calculé *)
 tel
 
-(* Retourne la direction à prendre en fonction de la couleur détecter par le capteur RC *)
-fun get_direction(col : color) returns (dir : direction)
+(* Calcule l'erreur entre la couleur de la route et la couleur du guide *)
+fun get_error(sens : sensors) returns (error : float)
+var color : color; color_value, normalized_value : float;
 let
-  dir = if compare_colors(col, cyan) >. 0.71 then Right
-        else if compare_colors(col, magenta) >. 0.71 then Left
+  color = sens.s_road;
+  color_value = compare_colors(color, blue);
+  (* 
+    on normalize la valeur de la couleur pour quel soit entre 0 et 1.
+    1 si c'est au centre, 0 si on est proche des extrémités.
+  *)
+  normalized_value = (color_value -. max_diff_color)/.(1.0 -. max_diff_color); 
+  error = normalized_value -. 0.5;
+tel
+
+(* Gère le PID, calcule la commande en fonction de l'erreur *)
+node pid(sens : sensors; kp, ki, kd : float) returns (u : float)
+var error : float;
+let
+  error = get_error(sens);
+  u = kp *. error +. ki *. integrator(error, timestep, 0.0) +. kd *. derivative(error, timestep);
+tel
+
+(* Retourne la direction à prendre en fonction de la couleur de la route *)
+fun get_direction(road_color : color) returns (dir : direction)
+let
+  dir = if compare_colors(road_color, cyan) >. max_diff_color then Right
+        else if compare_colors(road_color, magenta) >. max_diff_color then Left
         else Straight;
 tel
 
-fun calculate_rota_turn(col : color; max_rota : float) returns (rota_turn : float; dir : direction)
-var diff_guide : float;
+(* Calcule l'ajustement de la vitesse des roues en fonction de la fonction de commande *)
+fun get_speed_ajustment(u, max_rota : float) returns (rota_turn : float)
 let
-  dir = get_direction(col);
-  diff_guide = 1.0 -. compare_colors(col, blue);
-  rota_turn = max_rota *. (1.0 -. diff_guide);
+  (* vitesse maximal de rotation des roues - (vitesse maximal de rotation des roues * pourcentage à appliquer par rapport à la fonction de commande *)
+  rota_turn = max_rota -. (max_rota *. (1.0 -. u))
 tel
 
-(* Retourne la vitesse de rotation des roues en fonction de la couleur détecter par le capteur RC *)
+(* Calcule la vitesse des roues en fonction de la limitation de vitesse et de la couleur de la route *)
 node calculate_rspeed(sens : sensors; speed_limit : float) returns (rspeed : wheels)
-var max_rota, rota_turn: float; dir: direction; colRC : color;
+var u, max_rota, adjustment : float; dir : direction;
 let
-  colRC = sens.s_road;
+  u = pid(sens, kP, kI, kD);
   max_rota = max_rspeed(speed_limit);
-  (rota_turn, dir) = calculate_rota_turn(colRC, max_rota);
-  rspeed = if dir = Right then { left = max_rota ; right = rota_turn}
-           else if dir = Left then { left = rota_turn ; right = max_rota }
+  dir = get_direction(sens.s_road);
+  adjustment = get_speed_ajustment(u, max_rota);
+
+  rspeed = if dir = Right then { left = max_rota -. adjustment ; right = max_rota +. adjustment}
+           else if dir = Left then { left = max_rota +. adjustment ; right = max_rota -. adjustment }
            else { left = max_rota ; right = max_rota };
 tel
 
