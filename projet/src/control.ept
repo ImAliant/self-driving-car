@@ -13,6 +13,10 @@ const kD : float = 0.1 (* constante trouvé par essai pour le gain dérivé *)
 const wheel_circumference : float = pi *. cD
 const turn_speed : float = 150.0
 
+const min_distance_to_obstacle : int = 60
+
+(* Retourne true si un obstacle est détecté *)
+
 (* Retourne une vitesse nulle *)
 fun no_movement() returns (rspeed: wheels)
 let
@@ -153,6 +157,11 @@ let
   arriving = false;
 tel
 
+fun detect_obstacle(sens : sensors) returns (b : bool)
+let
+  b = sens.s_sonar <= min_distance_to_obstacle;
+tel
+
 
 (* Fonction utilisé lorsque l'action est Go, détermine la vitesse des roues et si on doit changer d'étape *)
 node go_state(sens : sensors; step_iti : itielt; old_step : int) returns (rspeed : wheels; arriving : bool; step : int)
@@ -180,14 +189,14 @@ let
       unless is_turn(step_iti.act) then Turn
            | is_stop(step_iti.act) then Stop
            | compare_colors(sens.s_road, red) = 1.0 and compare_colors(sens.s_front, red) = 1.0 then TrafficLight
-           (* | sens.s_sonar > 0 then Obstacle *)
+           | detect_obstacle(sens) then Obstacle
     state Turn do
       (rspeed, arriving,step) = turn_state(step_iti, last step);
       unless is_go(step_iti.act) then Go
            | is_stop(step_iti.act) then Stop      
     state Obstacle do
       (rspeed, arriving) = speed_arriving(false);
-      unless sens.s_sonar = 0 then Idle
+      unless not detect_obstacle(sens) then Idle
     state TrafficLight do
       (rspeed, arriving) = speed_arriving(false);
       unless compare_colors(sens.s_front, green) = 1.0 then Idle
