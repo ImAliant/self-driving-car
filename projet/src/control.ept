@@ -11,6 +11,7 @@ const kI : float = 0.0001 (* constante trouvé par essai pour le gain intégral 
 const kD : float = 0.1 (* constante trouvé par essai pour le gain dérivé *)
 
 const wheel_circumference : float = pi *. cD
+const turn_speed : float = 150.0
 
 (* Retourne une vitesse nulle *)
 fun no_movement() returns (rspeed: wheels)
@@ -104,6 +105,55 @@ let
   b = act = Stop
 tel
 
+fun turning_side(angle : float) returns (side : direction)
+let
+  side = if angle <. 0.0 then Right else Left;
+tel
+
+fun set_speed_from_turn_direction(dir : direction) returns (rspeed : wheels)
+let
+  rspeed = if dir = Right then {left = turn_speed; right = 0.0}
+            else {left = 0.0; right = turn_speed};
+tel
+
+fun get_arc_length(angle : float) returns (length : float)
+let
+  length = wheel_circumference *. (abs(angle) /. 180.0);
+tel
+
+fun get_linear_speed(rspeed : float) returns (speed : float)
+let 
+  speed = rspeed *. (wheel_circumference /. 360.0);
+tel
+
+fun calculate_turning_time(angle : float) returns (time : float)
+var arc_length, linear_speed : float;
+let
+  arc_length = get_arc_length(angle);
+  linear_speed = get_linear_speed(turn_speed);
+  time = abs(arc_length /. linear_speed);
+tel
+
+node is_turning_done(turning_time : float) returns (turn_done : bool)
+var last current_time: float = 0.0;
+let 
+  current_time = if last current_time >=. turning_time then 0.0 
+                else last current_time +. timestep;
+  turn_done = current_time >. turning_time;
+tel
+
+node turn_state(step_iti : itielt; old_step : int) returns (rspeed : wheels; arriving : bool; step : int)
+var angle, turning_time : float; turn_done : bool;
+let
+  angle = step_iti.param;
+  turning_time = calculate_turning_time(angle);
+  rspeed = set_speed_from_turn_direction(turning_side(angle));
+  step = if turn_done then old_step + 1 else old_step;
+  turn_done = is_turning_done(turning_time);
+  arriving = false;
+tel
+
+
 (* Fonction utilisé lorsque l'action est Go, détermine la vitesse des roues et si on doit changer d'étape *)
 node go_state(sens : sensors; step_iti : itielt; old_step : int) returns (rspeed : wheels; arriving : bool; step : int)
 let
@@ -132,8 +182,9 @@ let
            | compare_colors(sens.s_road, red) = 1.0 and compare_colors(sens.s_front, red) = 1.0 then TrafficLight
            (* | sens.s_sonar > 0 then Obstacle *)
     state Turn do
-      (rspeed, arriving) = speed_arriving(false);
-      (*on fait tourner le véhicule sur lui même tant que le l'angle n'est pas égale au param *)
+      (rspeed, arriving,step) = turn_state(step_iti, last step);
+      unless is_go(step_iti.act) then Go
+           | is_stop(step_iti.act) then Stop      
     state Obstacle do
       (rspeed, arriving) = speed_arriving(false);
       unless sens.s_sonar = 0 then Idle
