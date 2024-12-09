@@ -16,6 +16,8 @@ const turn_speed : float = 150.0
 
 const min_distance_to_obstacle : int = 60
 
+const time_between_steps : float = 1.0
+
 (* Retourne true si un obstacle est détecté *)
 
 (* Retourne une vitesse nulle *)
@@ -110,27 +112,32 @@ let
   b = act = Stop
 tel
 
+(* Retourne la direction à prendre en fonction de l'angle *)
 fun turning_side(angle : float) returns (side : direction)
 let
   side = if angle <. 0.0 then Right else Left;
 tel
 
+(* Détermine la vitesse des roues en fonction de la direction à prendre *)
 fun set_speed_from_turn_direction(dir : direction) returns (rspeed : wheels)
 let
   rspeed = if dir = Right then {left = turn_speed; right = 0.0}
             else {left = 0.0; right = turn_speed};
 tel
 
+(* Calcule la longueur de l'arc en fonction de l'angle *)
 fun get_arc_length(angle : float) returns (length : float)
 let
   length = wheel_circumference *. (abs(angle) /. 180.0);
 tel
 
+(* Calcule la vitesse linéaire en fonction de la vitesse de rotation d'une roue *)
 fun get_linear_speed(rspeed : float) returns (speed : float)
 let 
   speed = rspeed *. (wheel_circumference /. 360.0);
 tel
 
+(* Calcule le temps nécessaire pour effectuer une rotation *)
 fun calculate_turning_time(angle : float) returns (time : float)
 var arc_length, linear_speed : float;
 let
@@ -139,6 +146,7 @@ let
   time = abs(arc_length /. linear_speed);
 tel
 
+(* Retourne true si le temps de rotation est atteint *)
 node is_turning_done(turning_time : float) returns (turn_done : bool)
 var last current_time: float = 0.0;
 let 
@@ -147,6 +155,7 @@ let
   turn_done = current_time >. turning_time;
 tel
 
+(* Utilisé lorsque l'action courante est Turn, détermine le temps nécessaire pour effectuer une rotation complète avec une vitesse constante *)
 node turn_state(step_iti : itielt; old_step : int) returns (rspeed : wheels; arriving : bool; step : int)
 var angle, turning_time : float; turn_done : bool;
 let
@@ -160,33 +169,33 @@ let
   arriving = false;
 tel
 
+(* Retourne true si un obstacle est détecté *)
 fun detect_obstacle(sens : sensors) returns (b : bool)
 let
   b = sens.s_sonar <= min_distance_to_obstacle;
 tel
 
+(* Retourne true si un feu de circulation d'une couleur choisi est détecté *)
 fun detect_traffic_ligths(sens : sensors; col : color) returns (b : bool)
 let
   b = (* compare_colors(sens.s_road, red) = 1.0 and *) compare_colors(sens.s_front, col) = 1.0 
 tel
 
-const time_between_steps : float = 1.0
-
-node increment_step_if_green(is_green : bool; curr_step : int) returns (step : int)
+(* Incrémente l'étape lorqu'on entre dans une zone verte *)
+node increment_step_if_green_zone(is_green : bool; curr_step : int) returns (step : int)
 var last time: float = 0.0; increment, can_increment : bool; 
 let
   time = if increment then 0.0 else last time +. timestep;
-  can_increment = last time >=. time_between_steps;
-  increment = is_green and not (false fby is_green) and can_increment;
-  step = if increment
-         then curr_step + 1 else curr_step;
+  can_increment = last time >=. time_between_steps; (* utilisé pour éviter d'incrémenter deux zone verte accolé *)
+  increment = is_green and not (false fby is_green) and can_increment; 
+  step = if increment then curr_step + 1 else curr_step;
 tel
 
 (* Fonction utilisé lorsque l'action est Go, détermine la vitesse des roues et si on doit changer d'étape *)
 node go_state(sens : sensors; step_iti : itielt; curr_step : int) returns (rspeed : wheels; arriving : bool; step : int)
 let
   rspeed = calculate_rspeed(sens, step_iti.param);
-  step = increment_step_if_green(compare_colors(sens.s_road, green) = 1.0, curr_step);
+  step = increment_step_if_green_zone(compare_colors(sens.s_road, green) = 1.0, curr_step);
   arriving = false;
 tel
 
