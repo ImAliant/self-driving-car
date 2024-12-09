@@ -162,6 +162,11 @@ let
   b = sens.s_sonar <= min_distance_to_obstacle;
 tel
 
+fun detect_traffic_ligths(sens : sensors; col : color) returns (b : bool)
+let
+  b = compare_colors(sens.s_road, red) = 1.0 and compare_colors(sens.s_front, col) = 1.0 
+tel
+
 
 (* Fonction utilisé lorsque l'action est Go, détermine la vitesse des roues et si on doit changer d'étape *)
 node go_state(sens : sensors; step_iti : itielt; old_step : int) returns (rspeed : wheels; arriving : bool; step : int)
@@ -188,7 +193,7 @@ let
       (rspeed, arriving, step) = go_state(sens, step_iti, last step);
       unless is_turn(step_iti.act) then Turn
            | is_stop(step_iti.act) then Stop
-           | compare_colors(sens.s_road, red) = 1.0 and compare_colors(sens.s_front, red) = 1.0 then TrafficLight
+           | detect_traffic_ligths(sens, red) then TrafficLight
            | detect_obstacle(sens) then Obstacle
     state Turn do
       (rspeed, arriving,step) = turn_state(step_iti, last step);
@@ -199,7 +204,7 @@ let
       unless not detect_obstacle(sens) then Idle
     state TrafficLight do
       (rspeed, arriving) = speed_arriving(false);
-      unless compare_colors(sens.s_front, green) = 1.0 then Idle
+      unless detect_traffic_ligths(sens, green) then Idle
     state Stop do
       (rspeed, arriving) = speed_arriving(true);
   end
