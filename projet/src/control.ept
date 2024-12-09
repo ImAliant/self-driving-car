@@ -1,5 +1,6 @@
 open Globals
 open Utilities
+open Debug
 
 type direction = Left | Right | Straight
 
@@ -151,7 +152,9 @@ var angle, turning_time : float; turn_done : bool;
 let
   angle = step_iti.param;
   turning_time = calculate_turning_time(angle);
+
   rspeed = set_speed_from_turn_direction(turning_side(angle));
+
   step = if turn_done then old_step + 1 else old_step;
   turn_done = is_turning_done(turning_time);
   arriving = false;
@@ -164,16 +167,26 @@ tel
 
 fun detect_traffic_ligths(sens : sensors; col : color) returns (b : bool)
 let
-  b = compare_colors(sens.s_road, red) = 1.0 and compare_colors(sens.s_front, col) = 1.0 
+  b = (* compare_colors(sens.s_road, red) = 1.0 and *) compare_colors(sens.s_front, col) = 1.0 
 tel
 
+const time_between_steps : float = 1.0
+
+node increment_step_if_green(is_green : bool; curr_step : int) returns (step : int)
+var last time: float = 0.0; increment, can_increment : bool; 
+let
+  time = if increment then 0.0 else last time +. timestep;
+  can_increment = last time >=. time_between_steps;
+  increment = is_green and not (false fby is_green) and can_increment;
+  step = if increment
+         then curr_step + 1 else curr_step;
+tel
 
 (* Fonction utilisé lorsque l'action est Go, détermine la vitesse des roues et si on doit changer d'étape *)
-node go_state(sens : sensors; step_iti : itielt; old_step : int) returns (rspeed : wheels; arriving : bool; step : int)
+node go_state(sens : sensors; step_iti : itielt; curr_step : int) returns (rspeed : wheels; arriving : bool; step : int)
 let
   rspeed = calculate_rspeed(sens, step_iti.param);
-  step = if compare_colors(sens.s_road, green) = 1.0 
-         then old_step + 1 else old_step;
+  step = increment_step_if_green(compare_colors(sens.s_road, green) = 1.0, curr_step);
   arriving = false;
 tel
 
@@ -182,7 +195,7 @@ node controller(sens : sensors; iti : itielts)
 var last step: int = 0; step_iti : itielt;
 let
   step_iti = iti[> last step <];
-
+  
   automaton
     state Idle do
       (rspeed, arriving) = speed_arriving(false);
