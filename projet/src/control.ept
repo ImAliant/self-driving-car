@@ -12,13 +12,13 @@ const kI : float = 0.0001 (* constante trouvé par essai pour le gain intégral 
 const kD : float = 0.1 (* constante trouvé par essai pour le gain dérivé *)
 
 const wheel_circumference : float = pi *. cD
-const turn_speed : float = 150.0
+const turn_speed : float = cMAXWHEEL *. 0.5
+
+const guide_close : float = 0.85
 
 const min_distance_to_obstacle : int = 60
 
-const time_between_steps : float = 1.0
-
-(* Retourne true si un obstacle est détecté *)
+const time_between_steps : float = 0.5
 
 (* Retourne une vitesse nulle *)
 fun no_movement() returns (rspeed: wheels)
@@ -65,11 +65,18 @@ let
   u = kp *. error +. ki *. integrator(error, timestep, 0.0) +. kd *. derivative(error, timestep);
 tel
 
-(* Retourne la direction à prendre en fonction de la couleur de la route *)
-fun get_direction(road_color : color) returns (dir : direction)
+fun close_to_guide(sens: sensors) returns (b: bool)
 let
-  dir = if compare_colors(road_color, cyan) >. max_diff_color then Right
-        else if compare_colors(road_color, magenta) >. max_diff_color then Left
+  b = compare_colors(sens.s_road, blue) <. guide_close;
+tel
+
+(* Retourne la direction à prendre en fonction de la couleur de la route *)
+fun get_direction(sens: sensors) returns (dir: direction)
+var c_to_guide: bool;
+let
+  c_to_guide = close_to_guide(sens);
+  dir = if compare_colors(sens.s_road, cyan) >. max_diff_color and c_to_guide then Right
+        else if compare_colors(sens.s_road, magenta) >. max_diff_color and c_to_guide then Left
         else Straight;
 tel
 
@@ -86,7 +93,7 @@ var u, max_rota, adjustment : float; dir : direction;
 let
   u = pid(sens, kP, kI, kD);
   max_rota = max_rspeed(speed_limit);
-  dir = get_direction(sens.s_road);
+  dir = get_direction(sens);
   adjustment = get_speed_ajustment(u, max_rota);
 
   rspeed = if dir = Right then { left = max_rota -. adjustment ; right = max_rota +. adjustment}
@@ -183,7 +190,7 @@ tel
 
 (* Incrémente l'étape lorqu'on entre dans une zone verte *)
 node increment_step_if_green_zone(is_green : bool; curr_step : int) returns (step : int)
-var last time: float = 0.0; increment, can_increment : bool; 
+var last time: float = 0.0; increment, can_increment : bool;
 let
   time = if increment then 0.0 else last time +. timestep;
   can_increment = last time >=. time_between_steps; (* utilisé pour éviter d'incrémenter deux zone verte accolé *)
