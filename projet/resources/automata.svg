@@ -1,114 +1,121 @@
 <svg width="936" height="845" viewBox="0 0 702 633.75" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="translate(65.95001220703125,459.5950012207031) scale(1)">
+<g id="graph0" class="graph" transform="translate(-6.105010986328125,479.48500061035156) scale(1)">
 <title>finite_state_machine</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-270.72 620.27,-270.72 620.27,4 -4,4"/>
-<!-- 0 -->
+<polygon fill="white" stroke="none" points="-4,4 -4,-329.22 718.21,-329.22 718.21,4 -4,4"/>
+<!-- Idle -->
 <g id="node1" class="node">
 <title>Idle</title>
-<ellipse fill="none" stroke="black" cx="30.05" cy="-147" rx="26.05" ry="26.05"/>
-<ellipse fill="none" stroke="black" cx="30.05" cy="-147" rx="30.05" ry="30.05"/>
-<text text-anchor="middle" x="30.05" y="-142.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Idle</text>
-</g>
-<!-- 2 -->
-<g id="node3" class="node">
-<title>Turn</title>
-<ellipse fill="none" stroke="black" cx="416.34" cy="-222" rx="29.81" ry="18"/>
-<text text-anchor="middle" x="416.34" y="-217.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Turn</text>
-</g>
-<!-- Idle&#45;&gt;Tyr -->
-<g id="edge1" class="edge">
-<title>Idle-&gt;Turn</title>
-<path fill="none" stroke="black" d="M57.63,-159.73C64.23,-162.65 71.36,-165.6 78.1,-168 152.06,-194.3 171.07,-201.83 248.62,-214 291.38,-220.71 341.01,-222.32 374.93,-222.49"/>
-<polygon fill="black" stroke="black" points="374.72,-225.99 384.72,-222.49 374.72,-218.99 374.72,-225.99"/>
-<text text-anchor="middle" x="178.53" y="-215.05" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_turn</text>
-</g>
-<!-- Stop -->
-<g id="node4" class="node">
-<title>Go</title>
-<ellipse fill="none" stroke="black" cx="178.53" cy="-147" rx="27" ry="18"/>
-<text text-anchor="middle" x="178.53" y="-142.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Go</text>
-</g>
-<!-- Idle&#45;&gt;Go -->
-<g id="edge2" class="edge">
-<title>Idle-&gt;Go</title>
-<path fill="none" stroke="black" d="M60.34,-147C83.16,-147 115,-147 139.74,-147"/>
-<polygon fill="black" stroke="black" points="139.73,-150.5 149.73,-147 139.73,-143.5 139.73,-150.5"/>
-<text text-anchor="middle" x="93.27" y="-151.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_go</text>
+<ellipse fill="none" stroke="black" cx="30.05" cy="-163" rx="26.05" ry="26.05"/>
+<ellipse fill="none" stroke="black" cx="30.05" cy="-163" rx="30.05" ry="30.05"/>
+<text text-anchor="middle" x="30.05" y="-158.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Idle</text>
 </g>
 <!-- Stop -->
 <g id="node2" class="node">
 <title>Stop</title>
-<ellipse fill="none" stroke="black" cx="583.53" cy="-179" rx="28.75" ry="28.75"/>
-<ellipse fill="none" stroke="black" cx="583.53" cy="-179" rx="32.75" ry="32.75"/>
-<text text-anchor="middle" x="583.53" y="-174.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Stop</text>
+<ellipse fill="none" stroke="black" cx="681.46" cy="-236" rx="28.75" ry="28.75"/>
+<ellipse fill="none" stroke="black" cx="681.46" cy="-236" rx="32.75" ry="32.75"/>
+<text text-anchor="middle" x="681.46" y="-231.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Stop</text>
 </g>
-<!-- Sto -->
+<!-- Idle&#45;&gt;Stop -->
 <g id="edge3" class="edge">
-<title>Turn-&gt;Idle</title>
-<path fill="none" stroke="black" d="M388.72,-229.57C336.42,-243.04 217.42,-266.66 126.44,-232 98.58,-221.39 73.68,-198.49 56.31,-179.13"/>
-<polygon fill="black" stroke="black" points="59.06,-176.95 49.86,-171.68 53.76,-181.53 59.06,-176.95"/>
-<text text-anchor="middle" x="178.53" y="-254.12" font-family="Helvetica,Arial,sans-serif" font-size="14.00">turn_done</text>
+<title>Idle-&gt;Stop</title>
+<path fill="none" stroke="black" d="M45.25,-189.25C61.11,-215.52 89.49,-254.34 126.44,-271 307.41,-352.61 375.17,-279.12 573.04,-263 598.72,-260.91 605.75,-263.41 630.71,-257 634.05,-256.14 637.46,-255.09 640.85,-253.93"/>
+<polygon fill="black" stroke="black" points="641.96,-257.26 650.08,-250.45 639.49,-250.71 641.96,-257.26"/>
+<text text-anchor="middle" x="367.55" y="-312.62" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_stop</text>
 </g>
-<!-- Turn&#45;&gt;Stop -->
-<g id="edge4" class="edge">
-<title>Turn-&gt;Stop</title>
-<path fill="none" stroke="black" d="M444.25,-215C470.27,-208.22 510.1,-197.85 540.34,-189.98"/>
-<polygon fill="black" stroke="black" points="541.15,-193.39 549.94,-187.48 539.38,-186.61 541.15,-193.39"/>
-<text text-anchor="middle" x="512.94" y="-205.99" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_stop</text>
+<!-- Go -->
+<g id="node3" class="node">
+<title>Go</title>
+<ellipse fill="none" stroke="black" cx="203.01" cy="-163" rx="27" ry="18"/>
+<text text-anchor="middle" x="203.01" y="-158.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Go</text>
 </g>
-<!-- Tu -->
-<g id="edge6" class="edge">
-<title>Go-&gt;Stop</title>
-<path fill="none" stroke="black" d="M205.66,-149.07C273.39,-154.45 455.17,-168.89 539.03,-175.55"/>
-<polygon fill="black" stroke="black" points="538.68,-179.03 548.93,-176.33 539.23,-172.05 538.68,-179.03"/>
-<text text-anchor="middle" x="416.34" y="-174.43" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_stop</text>
+<!-- Idle&#45;&gt;Go -->
+<g id="edge1" class="edge">
+<title>Idle-&gt;Go</title>
+<path fill="none" stroke="black" d="M60.44,-163C89.14,-163 132.94,-163 164.21,-163"/>
+<polygon fill="black" stroke="black" points="164.02,-166.5 174.02,-163 164.02,-159.5 164.02,-166.5"/>
+<text text-anchor="middle" x="93.27" y="-167.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_go</text>
 </g>
-<!-- s -->
+<!-- Turn -->
+<g id="node4" class="node">
+<title>Turn</title>
+<ellipse fill="none" stroke="black" cx="514.28" cy="-236" rx="29.81" ry="18"/>
+<text text-anchor="middle" x="514.28" y="-231.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Turn</text>
+</g>
+<!-- Idle&#45;&gt;Turn -->
+<g id="edge2" class="edge">
+<title>Idle-&gt;Turn</title>
+<path fill="none" stroke="black" d="M57.5,-175.52C104.51,-196.96 206.27,-239.79 297.58,-254 359.04,-263.56 375.75,-261.24 437.52,-254 450.13,-252.52 463.69,-249.7 475.81,-246.73"/>
+<polygon fill="black" stroke="black" points="476.63,-250.13 485.43,-244.24 474.88,-243.35 476.63,-250.13"/>
+<text text-anchor="middle" x="203.01" y="-254.53" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_turn</text>
+</g>
+<!-- Go&#45;&gt;Stop -->
 <g id="edge5" class="edge">
+<title>Go-&gt;Stop</title>
+<path fill="none" stroke="black" d="M230.46,-162.05C291.75,-160.5 447.86,-160.31 573.04,-192.2 596.36,-198.14 621.32,-208.08 641.31,-216.99"/>
+<polygon fill="black" stroke="black" points="639.63,-220.08 650.18,-221.04 642.54,-213.71 639.63,-220.08"/>
+<text text-anchor="middle" x="514.28" y="-196.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_stop</text>
+</g>
+<!-- Go&#45;&gt;Turn -->
+<g id="edge4" class="edge">
 <title>Go-&gt;Turn</title>
-<path fill="none" stroke="black" d="M201.99,-156.59C215.38,-162.1 232.8,-168.91 248.62,-174 288.34,-186.77 299.52,-185.55 339.58,-197.2 352.5,-200.96 366.54,-205.44 378.98,-209.55"/>
-<polygon fill="black" stroke="black" points="377.85,-212.86 388.44,-212.71 380.07,-206.22 377.85,-212.86"/>
-<text text-anchor="middle" x="294.1" y="-201.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_turn</text>
+<path fill="none" stroke="black" d="M222.37,-175.9C240.56,-187.95 269.66,-205.35 297.58,-214 356.7,-232.31 428.86,-236.17 472.92,-236.6"/>
+<polygon fill="black" stroke="black" points="472.77,-240.1 482.78,-236.63 472.79,-233.1 472.77,-240.1"/>
+<text text-anchor="middle" x="367.55" y="-239.64" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_turn</text>
 </g>
-<!-- O -->
+<!-- TrafficLight -->
 <g id="node5" class="node">
-<title>Obstacle</title>
-<ellipse fill="none" stroke="black" cx="416.34" cy="-97" rx="44.82" ry="18"/>
-<text text-anchor="middle" x="416.34" y="-92.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Obstacle</text>
+<title>TrafficLight</title>
+<ellipse fill="none" stroke="black" cx="514.28" cy="-97" rx="58.76" ry="18"/>
+<text text-anchor="middle" x="514.28" y="-92.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">TrafficLight</text>
 </g>
-<!-- Go&#45;&gt;O -->
+<!-- Go&#45;&gt;TrafficLight -->
+<g id="edge6" class="edge">
+<title>Go-&gt;TrafficLight</title>
+<path fill="none" stroke="black" d="M227.17,-154.25C245.93,-147.44 273.16,-138.17 297.58,-132.2 305.04,-130.38 389.36,-116.78 450.32,-107.03"/>
+<polygon fill="black" stroke="black" points="450.59,-110.53 459.91,-105.5 449.48,-103.62 450.59,-110.53"/>
+<text text-anchor="middle" x="367.55" y="-136.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">detect_traffic_lights(red)</text>
+</g>
+<!-- Obstacle -->
+<g id="node6" class="node">
+<title>Obstacle</title>
+<ellipse fill="none" stroke="black" cx="514.28" cy="-18" rx="44.82" ry="18"/>
+<text text-anchor="middle" x="514.28" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">Obstacle</text>
+</g>
+<!-- Go&#45;&gt;Obstacle -->
 <g id="edge7" class="edge">
 <title>Go-&gt;Obstacle</title>
-<path fill="none" stroke="black" d="M204.79,-141.57C217.87,-138.76 234.1,-135.29 248.62,-132.2 287.57,-123.92 331.67,-114.61 364.72,-107.65"/>
-<polygon fill="black" stroke="black" points="365.38,-111.09 374.44,-105.6 363.94,-104.24 365.38,-111.09"/>
-<text text-anchor="middle" x="294.1" y="-136.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">detect_obstacle</text>
+<path fill="none" stroke="black" d="M219.04,-148.38C236.6,-131.98 267.15,-105.56 297.58,-89.2 351.05,-60.45 418.22,-40.53 463.27,-29.22"/>
+<polygon fill="black" stroke="black" points="463.88,-32.67 472.75,-26.89 462.21,-25.87 463.88,-32.67"/>
+<text text-anchor="middle" x="367.55" y="-93.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">detect_obstacle</text>
 </g>
-<!-- Traffic -->
-<g id="node6" class="node">
-<title>TrafficLight</title>
-<ellipse fill="none" stroke="black" cx="416.34" cy="-18" rx="58.76" ry="18"/>
-<text text-anchor="middle" x="416.34" y="-13.8" font-family="Helvetica,Arial,sans-serif" font-size="14.00">TrafficLight</text>
-</g>
-<!-- Go&#45;&gt;Traffic -->
-<g id="edge8" class="edge">
-<title>Go-&gt;TrafficLight</title>
-<path fill="none" stroke="black" d="M195.42,-132.48C208.9,-120.64 229.11,-104.02 248.62,-92.2 286.4,-69.32 332.47,-49.35 366.61,-35.91"/>
-<polygon fill="black" stroke="black" points="367.78,-39.21 375.83,-32.33 365.24,-32.69 367.78,-39.21"/>
-<text text-anchor="middle" x="294.1" y="-96.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">detect_red_light</text>
-</g>
-<!-- Obstacle&#45;&gt;Idle -->
+<!-- Turn&#45;&gt;Stop -->
 <g id="edge9" class="edge">
-<title>Obstacle-&gt;Idle</title>
-<path fill="none" stroke="black" d="M384.2,-84.24C370.73,-79.37 354.63,-74.42 339.58,-72 299.67,-65.58 288.73,-66.96 248.62,-72 193.01,-78.99 179.27,-84.5 126.44,-103.2 106.33,-110.32 84.68,-120.08 67.09,-128.58"/>
-<polygon fill="black" stroke="black" points="66.04,-125.2 58.6,-132.75 69.12,-131.48 66.04,-125.2"/>
-<text text-anchor="middle" x="178.53" y="-107.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">!detect_obstacle</text>
+<title>Turn-&gt;Stop</title>
+<path fill="none" stroke="black" d="M544.43,-236C570.18,-236 608.09,-236 637.35,-236"/>
+<polygon fill="black" stroke="black" points="636.98,-239.5 646.98,-236 636.98,-232.5 636.98,-239.5"/>
+<text text-anchor="middle" x="610.87" y="-240.2" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_stop</text>
+</g>
+<!-- Turn&#45;&gt;Go -->
+<g id="edge8" class="edge">
+<title>Turn-&gt;Go</title>
+<path fill="none" stroke="black" d="M494,-222.33C479.25,-212.58 458.01,-200.02 437.52,-193.2 428.32,-190.14 304.54,-175.03 241.04,-167.41"/>
+<polygon fill="black" stroke="black" points="241.77,-163.98 231.43,-166.26 240.94,-170.93 241.77,-163.98"/>
+<text text-anchor="middle" x="367.55" y="-197.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">is_go</text>
 </g>
 <!-- TrafficLight&#45;&gt;Idle -->
-<g id="edge10" class="edge">
+<g id="edge11" class="edge">
 <title>TrafficLight-&gt;Idle</title>
-<path fill="none" stroke="black" d="M358.06,-14.73C297.52,-13.58 200.7,-18.5 126.44,-54.2 98.14,-67.8 73.01,-93.11 55.65,-113.87"/>
-<polygon fill="black" stroke="black" points="53,-111.58 49.43,-121.56 58.44,-115.99 53,-111.58"/>
-<text text-anchor="middle" x="178.53" y="-58.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">detect_green_light</text>
+<path fill="none" stroke="black" d="M477.64,-82.65C465.16,-78.32 450.92,-74.15 437.52,-72 376.11,-62.13 359.21,-63.66 297.58,-72 219.39,-82.58 200.56,-92.16 126.44,-119.2 106.59,-126.44 85.16,-136.11 67.64,-144.52"/>
+<polygon fill="black" stroke="black" points="66.11,-141.37 58.65,-148.89 69.18,-147.66 66.11,-141.37"/>
+<text text-anchor="middle" x="203.01" y="-123.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">detect_traffic_lights(green)</text>
+</g>
+<!-- Obstacle&#45;&gt;Idle -->
+<g id="edge10" class="edge">
+<title>Obstacle-&gt;Idle</title>
+<path fill="none" stroke="black" d="M471.28,-12.26C397.13,-4.14 240.13,3.86 126.44,-54.2 94.44,-70.54 68.43,-102.58 51.69,-127.68"/>
+<polygon fill="black" stroke="black" points="48.82,-125.68 46.35,-135.98 54.7,-129.47 48.82,-125.68"/>
+<text text-anchor="middle" x="203.01" y="-58.4" font-family="Helvetica,Arial,sans-serif" font-size="14.00">!detect_obstacle</text>
 </g>
 </g>
 </svg>

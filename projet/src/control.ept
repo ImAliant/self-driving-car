@@ -49,12 +49,8 @@ var color : color; color_value, normalized_value : float;
 let
   color = sens.s_road;
   color_value = compare_colors(color, blue);
-  (* 
-    on normalize la valeur de la couleur pour quel soit entre 0 et 1.
-    1 si c'est au centre, 0 si on est proche des extrémités.
-  *)
-  normalized_value = (color_value -. max_diff_color)/.(1.0 -. max_diff_color); 
-  error = normalized_value -. 0.5;
+  normalized_value = (color_value -. max_diff_color)/.(1.0 -. max_diff_color);
+  error = normalized_value -. 0.5; 
 tel
 
 (* Gère le PID, calcule la commande en fonction de l'erreur *)
@@ -185,7 +181,7 @@ tel
 (* Retourne true si un feu de circulation d'une couleur choisi est détecté *)
 fun detect_traffic_ligths(sens : sensors; col : color) returns (b : bool)
 let
-  b = (* compare_colors(sens.s_road, red) = 1.0 and *) compare_colors(sens.s_front, col) = 1.0 
+  b = compare_colors(sens.s_front, col) = 1.0 
 tel
 
 (* Incrémente l'étape lorqu'on entre dans une zone verte *)
