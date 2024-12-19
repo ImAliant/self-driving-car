@@ -199,7 +199,7 @@ tel
 node go_state(sens : sensors; step_iti : itielt; curr_step : int) returns (rspeed : wheels; arriving : bool; step : int)
 let
   rspeed = calculate_rspeed(sens, step_iti.param);
-  step = increment_step(sens, curr_step);(* increment_step_if_green_zone(compare_colors(sens.s_road, green) = 1.0, curr_step); *)
+  step = increment_step(sens, curr_step);
   arriving = false;
 tel
 
