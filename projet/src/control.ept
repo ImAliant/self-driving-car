@@ -61,7 +61,7 @@ let
   u = kp *. error +. ki *. integrator(error, timestep, 0.0) +. kd *. derivative(error, timestep);
 tel
 
-fun close_to_guide(sens: sensors) returns (b: bool)
+fun is_close_to_guide(sens: sensors) returns (b: bool)
 let
   b = compare_colors(sens.s_road, blue) <. guide_close;
 tel
@@ -70,7 +70,7 @@ tel
 fun get_direction(sens: sensors) returns (dir: direction)
 var c_to_guide: bool;
 let
-  c_to_guide = close_to_guide(sens);
+  c_to_guide = is_close_to_guide(sens);
   dir = if compare_colors(sens.s_road, cyan) >. max_diff_color and c_to_guide then Right
         else if compare_colors(sens.s_road, magenta) >. max_diff_color and c_to_guide then Left
         else Straight;
@@ -179,15 +179,16 @@ let
 tel
 
 (* Retourne true si un feu de circulation d'une couleur choisi est détecté *)
-fun detect_traffic_ligths(sens : sensors; col : color) returns (b : bool)
+fun detect_traffic_ligths(sens : sensors; light_color : color) returns (b : bool)
 let
-  b = compare_colors(sens.s_front, col) = 1.0 
+  b = compare_colors(sens.s_front, light_color) = 1.0 
 tel
 
 (* Incrémente l'étape lorqu'on entre dans une zone verte *)
-node increment_step_if_green_zone(is_green : bool; curr_step : int) returns (step : int)
-var last time: float = 0.0; increment, can_increment : bool;
+node increment_step(sens : sensors; curr_step : int) returns (step: int)
+var last time: float = 0.0; increment, can_increment, is_green: bool;
 let
+  is_green = compare_colors(sens.s_road, green) = 1.0;
   time = if increment then 0.0 else last time +. timestep;
   can_increment = last time >=. time_between_steps; (* utilisé pour éviter d'incrémenter deux zone verte accolé *)
   increment = is_green and not (false fby is_green) and can_increment; 
@@ -198,7 +199,7 @@ tel
 node go_state(sens : sensors; step_iti : itielt; curr_step : int) returns (rspeed : wheels; arriving : bool; step : int)
 let
   rspeed = calculate_rspeed(sens, step_iti.param);
-  step = increment_step_if_green_zone(compare_colors(sens.s_road, green) = 1.0, curr_step);
+  step = increment_step(sens, curr_step);(* increment_step_if_green_zone(compare_colors(sens.s_road, green) = 1.0, curr_step); *)
   arriving = false;
 tel
 
