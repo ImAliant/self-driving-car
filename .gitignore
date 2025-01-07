@@ -1,0 +1,8 @@
+# scontest
+scontest
+# Object files
+*.o
+# heptagon generated files
+*.epci
+*.epo
+*.log

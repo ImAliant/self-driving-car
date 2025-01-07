@@ -1,0 +1,24 @@
+[log] logging to logs.txt
+[map assets/00.map] read map: oneway_line
+[map assets/00.map] read graphics: map_00_oneway_line.bmp
+[map assets/00.map] read guide: b-00.bmp
+[map assets/00.map] read init: x = 50.000000, y = 50.000000, head = 23.702999
+[map assets/00.map] starting to read segment rd of size 1
+[map assets/00.map] finished reading segment rd
+[map assets/00.map] starting to read segment wp of size 1
+[map assets/00.map] finished reading segment wp
+[map assets/00.map] starting to read segment tl of size 0
+[map assets/00.map] finished reading segment tl
+[map assets/00.map] starting to read segment st of size 0
+[map assets/00.map] finished reading segment st
+[map assets/00.map] starting to read segment obst of size 2
+[map assets/00.map] finished reading segment obst
+[map assets/00.map] starting to read segment iti of size 2
+[map assets/00.map] finished reading segment iti
+[sdl] loaded texture b-00.bmp
+[sdl] loaded texture orange.bmp
+[sdl] loaded texture obst.bmp
+[simulation] starting (16 ms/cycle)
+[simulation 00001012] shutting down, score = 19420, time = 9.420000
+[simulation] race quit before finishing
+[log] shutting down, closing logs.txt
